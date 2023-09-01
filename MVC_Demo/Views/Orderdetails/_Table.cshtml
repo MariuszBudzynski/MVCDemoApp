@@ -1,0 +1,45 @@
+﻿@model OrderDetailsModel
+@inject IOrderDetailsRepository repository
+
+<div>
+	<table class="table">
+		<thead>
+			<tr>
+				<th></th>
+				<th>OrderId</th>
+				<th>ProductId</th>
+				<th>UnitPrice</th>
+				<th>Quantity</th>
+				<th>Discount</th>
+
+			</tr>
+		</thead>
+		<tbody>
+			@{
+				var listoforders = repository.GetOrderDetails().Result;
+
+			@foreach (var od in listoforders.Skip(Model.ItemsToSkip).Take(Model.ItemsToShow))
+			{
+				string submitt = "return confirm('Do you really want to remove the order?');";
+				<tr class="table-bordered">
+					<form method="post" onsubmit="@submitt" asp-controller="DeleteOrder" asp-action="Delete">
+					<th>
+						<button type="submit" name="orderid" class="btn btn-danger text-center" value="@od.OrderId" asp-controller="DeleteOrder" asp-action="Delete">Remove Order</button>
+					</th>
+					<th>@od.OrderId</th>
+					<th>@od.ProductId</th>
+					<th>@od.UnitPrice</th>
+					<th>@od.Quantity</th>
+					<th>@od.Discount</th>
+					</form>
+					<form method="post">
+					<th>
+						<button type="submit" name="order" class="btn btn-info text-center" value="@od.OrderId" asp-controller="EditOrder" asp-action="Details">Edit Order</button>
+					</th>
+					</form>
+				</tr>
+			}
+			}
+		</tbody>
+	</table>
+</div>

@@ -1,0 +1,24 @@
+﻿@model OrderDetailsModel
+@inject IOrderDetailsRepository repository
+
+<div class="text-center">
+	<form method="post" asp-action="UpdatePage">
+		@{
+			var ordernumbers = repository.GetOrdersIDAsync().Result.Count();
+			var buttonnumber = ordernumbers <= 1 ? 0 : (ordernumbers / 100) + 1;
+
+			if (buttonnumber == 0)
+			{
+				return;
+			}
+			else
+			{
+				for (int i = 1; i <= buttonnumber; i++)
+				{
+					<input type="submit" name="button" value="@i" class="btn btn-outline-primary text-center btn-sm"
+						   itemid="@i"></input>
+				}
+			}
+		}
+	</form>
+</div>

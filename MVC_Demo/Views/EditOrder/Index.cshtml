@@ -1,0 +1,79 @@
+﻿@model AddOrderModel
+@inject IOrderDetailsRepository orderdetails
+@inject SelectListItemState selecteditems
+
+
+<div>
+	<h1 class="font-weight-bold">Edit order </h1>
+</div>
+<hr/>
+
+<form method="post" role="form" asp-controller="EditOrder" asp-action="PriceRefresh">
+	<div class="form-group">
+		<table>
+			<tr>
+				@{
+
+					<td class="table-active"><label asp-for="@Model.OrderId"></label></td>
+					<td><label> @Model.OrderId</label></td>
+					<td><input asp-for="@Model.OrderId" value="@Model.OrderId" hidden="hidden" /></td>
+				}
+			</tr>
+
+			<tr>
+				<td><label asp-for="@Model.Quantity"></label></td>
+				<td><input onchange="this.form.submit()" asp-for="@Model.Quantity" /></td>
+			</tr>
+
+			<tr>
+				<td><label>Product name</label></td>
+				<td>
+					@* asp-for is is needed to properly map the value from option *@
+					<select asp-for="@Model.ProductId" asp-items="@selecteditems.ListElements.Result" onchange="this.form.submit()"></select>
+				</td>
+
+			</tr>
+
+			<tr>
+				<td><label asp-for="@Model.UnitPrice"></label></td>
+				<td><label> @Model.UnitPrice</label></td>
+				<td><input asp-for="@Model.UnitPrice" value="@Model.UnitPrice" hidden="hidden" /></td>
+			</tr>
+
+			<tr>
+				@{
+					if (Model.Quantity != 0 && Model.ProductId != 0)
+					{
+						Random random = new Random();
+						var rd = Model.ProductId == 0 ? 0 : (decimal)random.Next(0, 50) / 100;
+
+						<td><label asp-for="@Model.Discount"></label></td>
+						<td><label> @rd</label></td>
+						<td><input asp-for="@Model.Discount" value="@rd" hidden="hidden" /></td>
+					}
+
+				}
+			</tr>
+
+			<tr>
+				@{
+					var sum = Model.Quantity * Model.UnitPrice;
+					var discountedsum = (float)sum - ((float)sum * Model.Discount);
+					<td><label>SUM: </label></td>
+					<td><label>@sum </label></td>
+				<tr>
+					<td><label>SUM after discount: </label></td>
+					<td><label>@discountedsum </label></td>
+				</tr>
+				}
+			</tr>
+		</table>
+	</div>
+
+	<div asp-validation-summary="All" class="text-danger"></div>
+
+	<div>
+		@* makes post request to controller in the form *@
+		<input class="btn btn-outline-primary text-center btn-sm" type="submit" value="Update order" asp-controller="EditOrder" asp-action="UpdateData"></input>
+	</div>
+</form>
